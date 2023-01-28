@@ -25,7 +25,7 @@ model Question {
   answer Boolean
 
   examId    String
-  exam      Exam     @relation(fields: [examId], references: [id])
+  exam      Exam     @relation(fields: [examId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

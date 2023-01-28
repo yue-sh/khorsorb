@@ -47,3 +47,8 @@ export class UpdateQuestionArgs {
 export class DeleteQuestionArgs {
 	questionId: string
 }
+
+export class UpdateSettingArgs {
+	key: string
+	value: string
+}

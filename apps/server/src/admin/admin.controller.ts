@@ -7,7 +7,9 @@ import {
 	UpdateExamArgs,
 	CreateQuestionArgs,
 	UpdateQuestionArgs,
-	DeleteQuestionArgs
+	DeleteQuestionArgs,
+	UpdateSettingArgs,
+	DeleteExamArgs
 } from './admin.dto'
 import { AppService } from '../app.service'
 
@@ -35,6 +37,11 @@ export class AdminController {
 		return this.service.updateExam(args, token)
 	}
 
+	@Post('/exam/delete')
+	deleteExam(@Body() args: DeleteExamArgs, @Headers('Authorization') token) {
+		return this.service.deleteExam(args, token)
+	}
+
 	@Post('/question/create')
 	createQuestion(
 		@Body() args: CreateQuestionArgs,
@@ -57,5 +64,13 @@ export class AdminController {
 		@Headers('Authorization') token
 	) {
 		return this.service.deleteQuestion(args, token)
+	}
+
+	@Post('/setting/update')
+	updateSetting(
+		@Body() args: UpdateSettingArgs,
+		@Headers('Authorization') token
+	) {
+		return this.service.updateSetting(args, token)
 	}
 }

@@ -188,51 +188,56 @@ export class AppService {
 		return true
 	}
 
-	async submitExam(args: SubmitExamArgs) {
+	submitExam(args: SubmitExamArgs) {
 		const { examId, data } = args
 		if (!examId || !data) {
 			throw new BadRequestException('Missing examId or data')
 		}
-		const { value: passingPercent } = await this.getSetting('EXAM_PASS_PERCENT')
-		const existStudent = await this.db.examSubmit.findMany({
-			where: {
-				examId,
-				studentId: data.studentId
-			}
-		})
-		if (existStudent.length > 0) {
-			for (const data of existStudent) {
-				if (data.passed === true) {
-					throw new BadRequestException('Exam already passed')
+
+		return this.db.$transaction(async (tx) => {
+			const { value: passingPercent } = await this.getSetting(
+				'EXAM_PASS_PERCENT'
+			)
+			const existStudent = await tx.examSubmit.findMany({
+				where: {
+					examId,
+					studentId: data.studentId
+				}
+			})
+			if (existStudent.length > 0) {
+				for (const data of existStudent) {
+					if (data.passed === true) {
+						throw new BadRequestException('Exam already passed')
+					}
 				}
 			}
-		}
-		let point = 0
-		const { questions } = await this.db.exam.findUnique({
-			where: { id: examId },
-			include: { questions: true }
-		})
-		for (const question of questions) {
-			const studentAnswer = data.answers.find(
-				(answer) => answer.questionId === question.id
-			)
-			if (studentAnswer && studentAnswer.answer === question.answer) {
-				point++
+			let point = 0
+			const { questions } = await tx.exam.findUnique({
+				where: { id: examId },
+				include: { questions: true }
+			})
+			for (const question of questions) {
+				const studentAnswer = data.answers.find(
+					(answer) => answer.questionId === question.id
+				)
+				if (studentAnswer && studentAnswer.answer === question.answer) {
+					point++
+				}
 			}
-		}
-		const passed = point / questions.length >= +passingPercent / 100
-		const examSubmit = await this.db.examSubmit.create({
-			data: {
-				examId,
-				studentId: data.studentId,
-				studentName: data.studentName,
-				studentBranch: data.studentBranch,
-				answers: JSON.stringify(data.answers),
-				point,
-				passed
-			}
-		})
+			const passed = point / questions.length >= +passingPercent / 100
+			const examSubmit = await tx.examSubmit.create({
+				data: {
+					examId,
+					studentId: data.studentId,
+					studentName: data.studentName,
+					studentBranch: data.studentBranch,
+					answers: JSON.stringify(data.answers),
+					point,
+					passed
+				}
+			})
 
-		return examSubmit
+			return examSubmit
+		})
 	}
 }

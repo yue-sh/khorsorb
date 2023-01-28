@@ -14,8 +14,6 @@
 		"@nestjs/common": "9.2.1",
 		"@nestjs/core": "9.2.1",
 		"@nestjs/platform-fastify": "9.2.1",
-		"@nestjs/swagger": "^6.1.4",
-		"@nestjs/websockets": "^9.2.1",
 		"class-transformer": "^0.5.1",
 		"cuid": "^3.0.0",
 		"fastify": "4.12.0",

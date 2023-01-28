@@ -1,0 +1,7 @@
+dist
+.next
+.env
+*.sample
+generated
+node_modules
+pnpm-lock.yaml

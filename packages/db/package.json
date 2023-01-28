@@ -1,0 +1,29 @@
+{
+	"name": "@exam/db",
+	"version": "1.0.0",
+	"private": true,
+	"main": "dist/index.js",
+	"typings": "dist/index.d.ts",
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"build": "pnpm db:generate && rimraf dist && swc src -d dist && tsc --build",
+		"build:prod": "rimraf dist && swc src -d dist",
+		"db:push": "prisma db push --accept-data-loss",
+		"db:seed": "prisma db seed",
+		"db:studio": "prisma studio",
+		"db:generate": "prisma generate"
+	},
+	"prisma": {
+		"seed": "ts-node prisma/seeds/index.ts"
+	},
+	"dependencies": {
+		"@nestjs/common": "9.2.1",
+		"@prisma/client": "4.9.0",
+		"@exam/core": "workspace:*"
+	},
+	"devDependencies": {
+		"prisma": "4.9.0"
+	}
+}

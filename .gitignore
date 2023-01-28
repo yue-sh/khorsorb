@@ -1,0 +1,11 @@
+dist
+tmp
+/out-tsc
+generated
+node_modules
+.DS_Store
+Thumbs.db
+.env
+next-env.d.ts
+.next
+coverage

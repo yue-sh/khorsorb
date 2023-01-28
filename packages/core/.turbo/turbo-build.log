@@ -1,0 +1,5 @@
+
+> @exam/core@1.0.0 build /Users/gusbell/Developer/projects/yue/khorsorb/packages/core
+> rimraf dist && swc src -d dist && tsc --build
+
+Successfully compiled: 3 files with swc (15.75ms)

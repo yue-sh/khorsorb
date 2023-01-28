@@ -1,13 +1,12 @@
 import { PrismaService } from '@exam/db'
-import { HttpModule } from '@nestjs/axios'
 import { Module } from '@nestjs/common'
 
-import { AppController } from './app.controller'
+import { AdminController } from './admin/admin.controller'
 import { AppService } from './app.service'
+import { PublicController } from './public/public.controller'
 
 @Module({
-	imports: [HttpModule],
-	controllers: [AppController],
+	controllers: [AdminController, PublicController],
 	providers: [AppService, PrismaService]
 })
 export class AppModule {}

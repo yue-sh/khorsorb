@@ -9,3 +9,4 @@ Thumbs.db
 next-env.d.ts
 .next
 coverage
+.turbo

@@ -1,4 +1,3 @@
-import 'reflect-metadata'
 import { SERVER_HOST, SERVER_PORT, isDevelopment } from '@exam/core'
 import { Logger } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'

@@ -17,6 +17,11 @@ import { AppService } from '../app.service'
 export class AdminController {
 	constructor(private readonly service: AppService) {}
 
+	@Get('/stats')
+	getStats(@Headers('Authorization') token) {
+		return this.service.getStats(token)
+	}
+
 	@Get('/answers')
 	getAnswers(@Headers('Authorization') token, @Query() args?: GetAnswersArgs) {
 		return this.service.getAnswers(token, args)

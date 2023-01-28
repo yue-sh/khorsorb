@@ -1,11 +1,16 @@
 import { Controller, Get, Query, Post, Body } from '@nestjs/common'
 
-import { GetQuestionsArgs, SubmitExamArgs } from './public.dto'
+import { GetQuestionsArgs, GetResultArgs, SubmitExamArgs } from './public.dto'
 import { AppService } from '../app.service'
 
 @Controller('/v1/public')
 export class PublicController {
 	constructor(private readonly service: AppService) {}
+
+	@Get('/results')
+	getResults(@Query() args: GetResultArgs) {
+		return this.service.getResult(args)
+	}
 
 	@Get('/exams')
 	getExams() {

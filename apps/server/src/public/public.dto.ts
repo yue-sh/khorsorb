@@ -1,3 +1,7 @@
+export class GetResultArgs {
+	studentId: string
+}
+
 export class GetQuestionsArgs {
 	examId: string
 }

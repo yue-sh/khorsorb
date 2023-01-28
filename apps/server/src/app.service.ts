@@ -18,7 +18,11 @@ import {
 	UpdateQuestionArgs,
 	UpdateSettingArgs
 } from './admin/admin.dto'
-import { GetQuestionsArgs, SubmitExamArgs } from './public/public.dto'
+import {
+	GetQuestionsArgs,
+	GetResultArgs,
+	SubmitExamArgs
+} from './public/public.dto'
 
 @Injectable()
 export class AppService {
@@ -93,6 +97,15 @@ export class AppService {
 		})
 	}
 
+	getResult(args: GetResultArgs) {
+		const { studentId } = args
+		return this.db.examSubmit.findMany({
+			where: {
+				studentId
+			}
+		})
+	}
+
 	getExams() {
 		return this.db.exam.findMany()
 	}
@@ -103,6 +116,10 @@ export class AppService {
 		return this.db.question.findMany({
 			where: {
 				...(examId && { examId })
+			},
+			select: {
+				id: true,
+				text: true
 			}
 		})
 	}
@@ -175,10 +192,12 @@ export class AppService {
 		await this.verifyAdmin(token)
 		const { examId, data } = args
 		try {
-			return this.db.exam.update({
+			const updatedExam = await this.db.exam.update({
 				where: { id: examId },
 				data
 			})
+
+			return updatedExam
 		} catch {
 			throw new BadRequestException('Exam not found')
 		}
@@ -188,9 +207,11 @@ export class AppService {
 		await this.verifyAdmin(token)
 		const { examId } = args
 		try {
-			return this.db.exam.delete({
+			await this.db.exam.delete({
 				where: { id: examId }
 			})
+
+			return true
 		} catch {
 			throw new BadRequestException('Exam not found')
 		}
@@ -223,10 +244,12 @@ export class AppService {
 		await this.verifyAdmin(token)
 		const { questionId, data } = args
 		try {
-			return this.db.question.update({
+			const updatedQuestion = this.db.question.update({
 				where: { id: questionId },
 				data
 			})
+
+			return updatedQuestion
 		} catch {
 			throw new BadRequestException('Question not found')
 		}
@@ -236,9 +259,11 @@ export class AppService {
 		await this.verifyAdmin(token)
 		const { questionId } = args
 		try {
-			return this.db.question.delete({
+			await this.db.question.delete({
 				where: { id: questionId }
 			})
+
+			return true
 		} catch {
 			throw new BadRequestException('Question not found')
 		}
@@ -251,10 +276,12 @@ export class AppService {
 			throw new BadRequestException('Missing key or value')
 		}
 		try {
-			return this.db.setting.update({
+			const updatedSetting = this.db.setting.update({
 				where: { key },
 				data: { value }
 			})
+
+			return updatedSetting
 		} catch {
 			throw new BadRequestException('Setting not found')
 		}

@@ -34,7 +34,10 @@ export class AppService {
 	}
 
 	async login(args: AdminLoginArgs) {
-		const { username, password } = args
+		const { username, password } = args || {}
+		if (!username || !password) {
+			throw new UnauthorizedException()
+		}
 		const { value: storedUsername } = await this.db.setting.findUnique({
 			where: {
 				key: 'ADMIN_USER_USERNAME'
@@ -54,7 +57,7 @@ export class AppService {
 		if (username === storedUsername && password === storedPassword) {
 			return generateToken(JSON.stringify({ username }))
 		}
-		throw new UnauthorizedException('Unauthorized')
+		throw new UnauthorizedException()
 	}
 
 	async createExam(args: CreateExamArgs, token) {

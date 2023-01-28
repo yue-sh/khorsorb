@@ -1,22 +1,20 @@
 version: '3.8'
 
 volumes:
-  redis_data:
-  postgres_data:
-  typesense_data:
+  exam_data:
 
 
 services:
-  postgres:
+  mysql:
     container_name: ryouko-database
     image: mysql:8
     restart: unless-stopped
     ports:
       - 3306:3306
     environment:
-      - POSTGRES_HOST=${DATABASE_HOST}
-      - POSTGRES_DB=${DATABASE_NAME}
-      - POSTGRES_USER=${DATABASE_USER}
-      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+      - MYSQL_DATABASE=${DATABASE_NAME}
+      - MYSQL_USER=${DATABASE_USER}
+      - MYSQL_PASSWORD=${DATABASE_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${DATABASE_PASSWORD}
     volumes:
       - exam_data:/var/lib/mysql

@@ -4,9 +4,8 @@
 	"private": true,
 	"scripts": {
 		"dev": "nest start --watch --preserveWatchOutput",
-		"build": "rimraf dist && nest build --webpack",
-		"start": "nest start",
-		"start:prod": "node dist/main"
+		"build:prod": "rimraf dist && nest build --webpack",
+		"start": "node dist/main"
 	},
 	"dependencies": {
 		"@exam/core": "workspace:*",

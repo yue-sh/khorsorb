@@ -13,6 +13,7 @@
 		"dev:client": "dotenv -- turbo run dev --filter=\"./apps/client/*\"",
 		"dev:server": "dotenv -- turbo run dev --filter=\"./apps/server\"",
 		"build": "dotenv -- turbo run build",
+		"build:prod": "dotenv -- turbo run build:prod",
 		"build:package": "dotenv -- turbo run build --filter=\"./packages/*\"",
 		"build:client": "dotenv -- turbo run build --filter=\"./apps/client/*\"",
 		"build:server": "dotenv -- turbo run build --filter=\"./apps/server\"",

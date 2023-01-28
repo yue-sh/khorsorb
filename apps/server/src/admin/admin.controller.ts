@@ -1,6 +1,7 @@
-import { Controller, Post, Headers, Body } from '@nestjs/common'
+import { Controller, Post, Headers, Body, Get, Query } from '@nestjs/common'
 
 import {
+	GetAnswersArgs,
 	AdminLoginArgs,
 	CreateExamArgs,
 	UpdateExamArgs,
@@ -13,6 +14,11 @@ import { AppService } from '../app.service'
 @Controller('/v1/admin')
 export class AdminController {
 	constructor(private readonly service: AppService) {}
+
+	@Get('/answers')
+	getAnswers(@Headers('Authorization') token, @Query() args?: GetAnswersArgs) {
+		return this.service.getAnswers(token, args)
+	}
 
 	@Post('/login')
 	adminLogin(@Body() args: AdminLoginArgs) {

@@ -10,9 +10,10 @@ generator client {
 }
 
 model Exam {
-  id        String     @id @default(cuid())
+  id        String       @id @default(cuid())
   name      String
   questions Question[]
+  answers   ExamSubmit[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -36,6 +37,8 @@ model ExamSubmit {
   studentBranch String
   answers       Json
 
+  examId    String?
+  exam      Exam?    @relation(fields: [examId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

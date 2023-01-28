@@ -1,3 +1,7 @@
+export class GetAnswersArgs {
+	examId: string
+}
+
 export class AdminLoginArgs {
 	username: string
 	password: string
@@ -18,6 +22,10 @@ export class UpdateExamArgs {
 	data?: {
 		name: string
 	}
+}
+
+export class DeleteExamArgs {
+	examId: string
 }
 
 export class CreateQuestionArgs {

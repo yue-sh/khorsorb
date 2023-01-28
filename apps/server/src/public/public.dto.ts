@@ -2,9 +2,17 @@ export class GetQuestionsArgs {
 	examId: string
 }
 
+class ExamAnswer {
+	questionId: string
+	answer: boolean
+}
+
 export class SubmitAnswerArgs {
-	studentId: string
-	studentName: string
-	studentBranch: string
-	answers: JSON
+	examId: string
+	data: {
+		studentId: string
+		studentName: string
+		studentBranch: string
+		answers: ExamAnswer[]
+	}
 }

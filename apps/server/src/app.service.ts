@@ -15,7 +15,12 @@ import {
 	UpdateExamArgs,
 	UpdateQuestionArgs
 } from './admin/admin.dto'
-import { GetQuestionsArgs } from './public/public.dto'
+import { GetQuestionsArgs, SubmitAnswerArgs } from './public/public.dto'
+
+interface ExamAnswers {
+	questionId: string
+	answer: boolean
+}
 
 @Injectable()
 export class AppService {
@@ -46,6 +51,17 @@ export class AppService {
 		throw new UnauthorizedException()
 	}
 
+	private getSetting(key) {
+		return this.db.setting.findUnique({
+			where: {
+				key
+			},
+			select: {
+				value: true
+			}
+		})
+	}
+
 	//! Query
 
 	getExams() {
@@ -54,6 +70,7 @@ export class AppService {
 
 	getQuestions(args?: GetQuestionsArgs) {
 		const { examId } = args || {}
+
 		return this.db.question.findMany({
 			where: {
 				...(examId && { examId })
@@ -64,6 +81,7 @@ export class AppService {
 	async getAnswers(token, args?: GetAnswersArgs) {
 		await this.verifyAdmin(token)
 		const { examId } = args || {}
+
 		return this.db.examSubmit.findMany({
 			where: {
 				...(examId && { examId })
@@ -127,42 +145,42 @@ export class AppService {
 			})
 		}
 
-		return true
+		return exam
 	}
 
 	async updateExam(args: UpdateExamArgs, token) {
 		await this.verifyAdmin(token)
 		const { examId, data } = args
-		await this.db.exam.update({
+		const updatedExam = await this.db.exam.update({
 			where: { id: examId },
 			data
 		})
 
-		return true
+		return updatedExam
 	}
 
 	async createQuestion(args: CreateQuestionArgs, token) {
 		await this.verifyAdmin(token)
 		const { examId, data } = args
-		await this.db.question.create({
+		const question = await this.db.question.create({
 			data: {
 				examId,
 				...data
 			}
 		})
 
-		return true
+		return question
 	}
 
 	async updateQuestion(args: UpdateQuestionArgs, token) {
 		await this.verifyAdmin(token)
 		const { questionId, data } = args
-		await this.db.question.update({
+		const updatedQuestion = await this.db.question.update({
 			where: { id: questionId },
 			data
 		})
 
-		return true
+		return updatedQuestion
 	}
 
 	async deleteQuestion(args: DeleteQuestionArgs, token) {
@@ -173,5 +191,52 @@ export class AppService {
 		})
 
 		return true
+	}
+
+	async submitAnswer(args: SubmitAnswerArgs) {
+		const { examId, data } = args
+		if (!examId || !data) {
+			throw new BadRequestException('Missing examId or data')
+		}
+		const { value: passingPercent } = await this.getSetting('EXAM_PASS_PERCENT')
+		const existStudent = await this.db.examSubmit.findMany({
+			where: {
+				examId,
+				studentId: data.studentId
+			}
+		})
+		if (existStudent.length > 0) {
+			for (const data of existStudent) {
+				if (data.passed === true) {
+					throw new BadRequestException('Exam already passed')
+				}
+			}
+		}
+		let point = 0
+		const { questions } = await this.db.exam.findUnique({
+			where: { id: examId },
+			include: { questions: true }
+		})
+		const answers = data.answers as any as ExamAnswers[]
+		for (const question of questions) {
+			const answer = answers.find((answer) => answer.questionId === question.id)
+			if (answer && answer.answer === question.answer) {
+				point++
+			}
+		}
+		const passed = point / questions.length >= +passingPercent / 100
+		const examSubmit = await this.db.examSubmit.create({
+			data: {
+				examId,
+				studentId: data.studentId,
+				studentName: data.studentName,
+				studentBranch: data.studentBranch,
+				answers: JSON.stringify(data.answers),
+				point,
+				passed
+			}
+		})
+
+		return examSubmit
 	}
 }

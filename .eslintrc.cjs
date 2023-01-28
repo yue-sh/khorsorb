@@ -26,7 +26,7 @@ module.exports = {
 		'react-hooks/rules-of-hooks': 'off',
 		'react-hooks/exhaustive-deps': 'off',
 		'@typescript-eslint/no-unused-vars': 'warn',
-		'@typescript-eslint/no-explicit-any': 'warn',
+		'@typescript-eslint/no-explicit-any': 'off',
 	},
 	overrides: [
 		{

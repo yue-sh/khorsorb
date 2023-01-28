@@ -62,6 +62,37 @@ export class AppService {
 
 	//! Query
 
+	async getStats(token) {
+		await this.verifyAdmin(token)
+		return this.db.$transaction(async (tx) => {
+			const examCount = await tx.exam.count()
+			const questionCount = await tx.question.count()
+			const examSubmit = await tx.examSubmit.findMany({
+				where: {
+					createdAt: {
+						gte: new Date(new Date().setDate(new Date().getDate() - 7))
+					}
+				}
+			})
+			const examSubmitCount = examSubmit.length
+			const examSubmitByBranch = examSubmit.reduce((acc, curr) => {
+				const { studentBranch } = curr
+				if (acc[studentBranch]) {
+					acc[studentBranch]++
+				} else {
+					acc[studentBranch] = 1
+				}
+				return acc
+			}, {})
+			return {
+				examCount,
+				questionCount,
+				examSubmitCount,
+				examSubmitByBranch
+			}
+		})
+	}
+
 	getExams() {
 		return this.db.exam.findMany()
 	}

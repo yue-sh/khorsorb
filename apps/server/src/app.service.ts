@@ -15,12 +15,7 @@ import {
 	UpdateExamArgs,
 	UpdateQuestionArgs
 } from './admin/admin.dto'
-import { GetQuestionsArgs, SubmitAnswerArgs } from './public/public.dto'
-
-interface ExamAnswers {
-	questionId: string
-	answer: boolean
-}
+import { GetQuestionsArgs, SubmitExamArgs } from './public/public.dto'
 
 @Injectable()
 export class AppService {
@@ -193,7 +188,7 @@ export class AppService {
 		return true
 	}
 
-	async submitAnswer(args: SubmitAnswerArgs) {
+	async submitExam(args: SubmitExamArgs) {
 		const { examId, data } = args
 		if (!examId || !data) {
 			throw new BadRequestException('Missing examId or data')
@@ -217,10 +212,11 @@ export class AppService {
 			where: { id: examId },
 			include: { questions: true }
 		})
-		const answers = data.answers as any as ExamAnswers[]
 		for (const question of questions) {
-			const answer = answers.find((answer) => answer.questionId === question.id)
-			if (answer && answer.answer === question.answer) {
+			const studentAnswer = data.answers.find(
+				(answer) => answer.questionId === question.id
+			)
+			if (studentAnswer && studentAnswer.answer === question.answer) {
 				point++
 			}
 		}

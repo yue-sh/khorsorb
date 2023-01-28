@@ -1,6 +1,6 @@
-import { Controller, Get, Query } from '@nestjs/common'
+import { Controller, Get, Query, Post, Body } from '@nestjs/common'
 
-import { GetQuestionsArgs } from './public.dto'
+import { GetQuestionsArgs, SubmitExamArgs } from './public.dto'
 import { AppService } from '../app.service'
 
 @Controller('/v1/public')
@@ -15,5 +15,10 @@ export class PublicController {
 	@Get('/questions')
 	getQuestions(@Query() args?: GetQuestionsArgs) {
 		return this.service.getQuestions(args)
+	}
+
+	@Post('/exam/submit')
+	submitExam(@Body() args: SubmitExamArgs) {
+		return this.service.submitExam(args)
 	}
 }

@@ -7,7 +7,7 @@ class ExamAnswer {
 	answer: boolean
 }
 
-export class SubmitAnswerArgs {
+export class SubmitExamArgs {
 	examId: string
 	data: {
 		studentId: string

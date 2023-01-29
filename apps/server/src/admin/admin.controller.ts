@@ -22,9 +22,12 @@ export class AdminController {
 		return this.service.getStats(token)
 	}
 
-	@Get('/answers')
-	getAnswers(@Headers('Authorization') token, @Query() args?: GetAnswersArgs) {
-		return this.service.getAnswers(token, args)
+	@Get('/results')
+	getAdminResults(
+		@Headers('Authorization') token,
+		@Query() args?: GetAnswersArgs
+	) {
+		return this.service.getAdminResults(token, args)
 	}
 
 	@Post('/login')

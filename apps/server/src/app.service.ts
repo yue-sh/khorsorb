@@ -176,7 +176,7 @@ export class AppService {
 		})
 	}
 
-	async getAnswers(token, args?: GetAnswersArgs) {
+	async getAdminResults(token, args?: GetAnswersArgs) {
 		await this.verifyAdmin(token)
 		const { examId } = args || {}
 

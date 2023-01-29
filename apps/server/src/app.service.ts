@@ -173,6 +173,23 @@ export class AppService {
 		return examList
 	}
 
+	getAdminQuestions(args?: GetQuestionsArgs) {
+		const { examId } = args || {}
+
+		return this.db.question.findMany({
+			where: {
+				...(examId && { examId })
+			},
+			select: {
+				id: true,
+				text: true,
+				choice1: true,
+				choice2: true,
+				answer: true
+			}
+		})
+	}
+
 	getQuestions(args?: GetQuestionsArgs) {
 		const { examId } = args || {}
 
@@ -182,6 +199,8 @@ export class AppService {
 			},
 			select: {
 				id: true,
+				choice1: true,
+				choice2: true,
 				text: true
 			}
 		})
@@ -242,13 +261,15 @@ export class AppService {
 				}
 			})
 			for (const question of questions) {
-				const { text, answer } = question
+				const { text, answer, choice1, choice2 } = question
 				await tx.question.create({
 					data: {
 						id: cuid.slug(),
 						examId: exam.id,
 						text,
-						answer
+						answer,
+						choice1,
+						choice2
 					}
 				})
 			}
@@ -406,13 +427,17 @@ export class AppService {
 				select: {
 					id: true,
 					text: true,
-					answer: true
+					answer: true,
+					choice1: true,
+					choice2: true
 				}
 			})
 			const mappedOriginalAnswers = originalAnswers.map((answer) => ({
 				questionId: answer.id,
 				text: answer.text,
-				answer: answer.answer
+				answer: answer.answer,
+				choice1: answer.choice1,
+				choice2: answer.choice2
 			}))
 			const examSubmit = await tx.examSubmit.create({
 				data: {

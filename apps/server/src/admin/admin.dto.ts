@@ -10,6 +10,8 @@ export class AdminLoginArgs {
 class ExamQuestions {
 	text: string
 	answer: boolean
+	choice1: string
+	choice2: string
 }
 
 export class CreateExamArgs {
@@ -31,6 +33,8 @@ export class DeleteExamArgs {
 export class CreateQuestionArgs {
 	examId: string
 	data: {
+		choice1: string
+		choice2: string
 		text: string
 		answer: boolean
 	}
@@ -39,6 +43,8 @@ export class CreateQuestionArgs {
 export class UpdateQuestionArgs {
 	questionId: string
 	data: {
+		choice1?: string
+		choice2?: string
 		text?: string
 		answer?: boolean
 	}

@@ -20,9 +20,11 @@ model Exam {
 }
 
 model Question {
-  id     String  @id @default(cuid())
-  text   String
-  answer Boolean
+  id      String  @id @default(cuid())
+  text    String
+  choice1 String
+  choice2 String
+  answer  Boolean
 
   examId    String
   exam      Exam     @relation(fields: [examId], references: [id], onDelete: Cascade)

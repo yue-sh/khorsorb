@@ -99,6 +99,9 @@ export class AppService {
 
 	getResult(args: GetResultArgs) {
 		const { studentId } = args
+		if (!studentId) {
+			throw new BadRequestException('Missing studentId')
+		}
 		return this.db.examSubmit.findMany({
 			where: {
 				studentId
@@ -140,7 +143,7 @@ export class AppService {
 	async login(args: AdminLoginArgs) {
 		const { username, password } = args || {}
 		if (!username || !password) {
-			throw new UnauthorizedException()
+			throw new UnauthorizedException('Missing username or password')
 		}
 		const { value: storedUsername } = await this.getSetting(
 			'ADMIN_USER_USERNAME'
@@ -154,11 +157,14 @@ export class AppService {
 		throw new UnauthorizedException()
 	}
 
-	async createExam(args: CreateExamArgs, token) {
-		await this.verifyAdmin(token)
+	createExam(args: CreateExamArgs, token) {
 		const { name, questions } = args
+		if (!name || !questions) {
+			throw new BadRequestException('Missing name or questions')
+		}
 
 		return this.db.$transaction(async (tx) => {
+			await this.verifyAdmin(token)
 			const exist = await tx.exam.findFirst({
 				where: {
 					name
@@ -188,40 +194,52 @@ export class AppService {
 		})
 	}
 
-	async updateExam(args: UpdateExamArgs, token) {
-		await this.verifyAdmin(token)
-		const { examId, data } = args
+	updateExam(args: UpdateExamArgs, token) {
+		const { examId, data } = args || {}
+		if (!examId || !data) {
+			throw new BadRequestException('Missing examId or data')
+		}
 		try {
-			const updatedExam = await this.db.exam.update({
-				where: { id: examId },
-				data
-			})
+			return this.db.$transaction(async (tx) => {
+				await this.verifyAdmin(token)
+				const updatedExam = await tx.exam.update({
+					where: { id: examId },
+					data
+				})
 
-			return updatedExam
+				return updatedExam
+			})
 		} catch {
 			throw new BadRequestException('Exam not found')
 		}
 	}
 
-	async deleteExam(args: DeleteExamArgs, token) {
-		await this.verifyAdmin(token)
+	deleteExam(args: DeleteExamArgs, token) {
 		const { examId } = args
+		if (!examId) {
+			throw new BadRequestException('Missing examId')
+		}
 		try {
-			await this.db.exam.delete({
-				where: { id: examId }
-			})
+			return this.db.$transaction(async (tx) => {
+				await this.verifyAdmin(token)
+				await tx.exam.delete({
+					where: { id: examId }
+				})
 
-			return true
+				return true
+			})
 		} catch {
 			throw new BadRequestException('Exam not found')
 		}
 	}
 
-	async createQuestion(args: CreateQuestionArgs, token) {
-		await this.verifyAdmin(token)
-		const { examId, data } = args
-
+	createQuestion(args: CreateQuestionArgs, token) {
+		const { examId, data } = args || {}
+		if (!examId || !data) {
+			throw new BadRequestException('Missing examId or data')
+		}
 		return this.db.$transaction(async (tx) => {
+			await this.verifyAdmin(token)
 			const exam = await tx.exam.findUnique({
 				where: { id: examId },
 				select: { id: true }
@@ -240,48 +258,54 @@ export class AppService {
 		})
 	}
 
-	async updateQuestion(args: UpdateQuestionArgs, token) {
-		await this.verifyAdmin(token)
-		const { questionId, data } = args
+	updateQuestion(args: UpdateQuestionArgs, token) {
 		try {
-			const updatedQuestion = this.db.question.update({
-				where: { id: questionId },
-				data
-			})
+			return this.db.$transaction(async (tx) => {
+				await this.verifyAdmin(token)
+				const { questionId, data } = args
+				const updatedQuestion = tx.question.update({
+					where: { id: questionId },
+					data
+				})
 
-			return updatedQuestion
+				return updatedQuestion
+			})
 		} catch {
 			throw new BadRequestException('Question not found')
 		}
 	}
 
-	async deleteQuestion(args: DeleteQuestionArgs, token) {
-		await this.verifyAdmin(token)
-		const { questionId } = args
+	deleteQuestion(args: DeleteQuestionArgs, token) {
 		try {
-			await this.db.question.delete({
-				where: { id: questionId }
-			})
+			return this.db.$transaction(async (tx) => {
+				await this.verifyAdmin(token)
+				const { questionId } = args
+				await tx.question.delete({
+					where: { id: questionId }
+				})
 
-			return true
+				return true
+			})
 		} catch {
 			throw new BadRequestException('Question not found')
 		}
 	}
 
-	async updateSetting(args: UpdateSettingArgs, token) {
-		await this.verifyAdmin(token)
-		const { key, value } = args || {}
-		if (!key || !value) {
-			throw new BadRequestException('Missing key or value')
-		}
+	updateSetting(args: UpdateSettingArgs, token) {
 		try {
-			const updatedSetting = this.db.setting.update({
-				where: { key },
-				data: { value }
-			})
+			return this.db.$transaction(async (tx) => {
+				await this.verifyAdmin(token)
+				const { key, value } = args || {}
+				if (!key || !value) {
+					throw new BadRequestException('Missing key or value')
+				}
+				const updatedSetting = tx.setting.update({
+					where: { key },
+					data: { value }
+				})
 
-			return updatedSetting
+				return updatedSetting
+			})
 		} catch {
 			throw new BadRequestException('Setting not found')
 		}
@@ -294,22 +318,6 @@ export class AppService {
 		}
 
 		return this.db.$transaction(async (tx) => {
-			const { value: passingPercent } = await this.getSetting(
-				'EXAM_PASS_PERCENT'
-			)
-			const existScore = await tx.examSubmit.findMany({
-				where: {
-					examId,
-					studentId: data.studentId
-				}
-			})
-			if (existScore.length > 0) {
-				for (const data of existScore) {
-					if (data.passed === true) {
-						throw new BadRequestException('Exam already passed')
-					}
-				}
-			}
 			let point = 0
 			const { questions } = await tx.exam.findUnique({
 				where: { id: examId },
@@ -329,7 +337,6 @@ export class AppService {
 					point++
 				}
 			}
-			const passed = point / questions.length >= +passingPercent / 100
 
 			return tx.examSubmit.create({
 				data: {
@@ -338,8 +345,7 @@ export class AppService {
 					studentName: data.studentName,
 					studentBranch: data.studentBranch,
 					answers: JSON.stringify(data.answers),
-					point,
-					passed
+					point
 				}
 			})
 		})

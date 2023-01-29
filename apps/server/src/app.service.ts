@@ -66,6 +66,34 @@ export class AppService {
 
 	//! Query
 
+	private generateWeekRange() {
+		const startDate = new Date()
+		startDate.setDate(startDate.getDate() - startDate.getDay())
+		startDate.setHours(0, 0, 0, 0)
+		const endDate = new Date()
+		endDate.setDate(endDate.getDate() + (6 - endDate.getDay()))
+		endDate.setHours(23, 59, 59, 999)
+
+		return { startDate, endDate }
+	}
+
+	private addDays(date: Date, days: number) {
+		const result = new Date(date)
+		result.setDate(result.getDate() + days)
+		return result
+	}
+
+	private getDates(startDate: Date, stopDate: Date) {
+		const dateArray: Date[] = []
+		let currentDate = startDate
+		while (currentDate <= stopDate) {
+			dateArray.push(new Date(currentDate))
+			currentDate = this.addDays(currentDate, 1) //currentDate.addDays(1)
+		}
+
+		return dateArray
+	}
+
 	async getStats(token) {
 		await this.verifyAdmin(token)
 		return this.db.$transaction(async (tx) => {
@@ -88,13 +116,34 @@ export class AppService {
 				}
 				return acc
 			}, {})
+			const weeklyExamSubmitCount = await this.getWeeklyExamSubmit()
 			return {
 				examCount,
 				questionCount,
 				examSubmitCount,
-				examSubmitByBranch
+				examSubmitByBranch,
+				weeklyExamSubmitCount
 			}
 		})
+	}
+
+	async getWeeklyExamSubmit(): Promise<number[]> {
+		const { startDate, endDate } = this.generateWeekRange()
+		const dates = this.getDates(startDate, endDate)
+		const examSubmitArray = []
+		for (const date of dates) {
+			const examSubmit = await this.db.examSubmit.count({
+				where: {
+					createdAt: {
+						gte: date,
+						lte: this.addDays(date, 1)
+					}
+				}
+			})
+			examSubmitArray.push(examSubmit)
+		}
+
+		return examSubmitArray
 	}
 
 	getResult(args: GetResultArgs) {
@@ -337,6 +386,19 @@ export class AppService {
 					point++
 				}
 			}
+			const originalAnswers = await tx.question.findMany({
+				where: { examId },
+				select: {
+					id: true,
+					text: true,
+					answer: true
+				}
+			})
+			const mappedOriginalAnswers = originalAnswers.map((answer) => ({
+				questionId: answer.id,
+				text: answer.text,
+				answer: answer.answer
+			}))
 
 			return tx.examSubmit.create({
 				data: {
@@ -344,6 +406,7 @@ export class AppService {
 					studentId: data.studentId,
 					studentName: data.studentName,
 					studentBranch: data.studentBranch,
+					originalAnswers: JSON.stringify(mappedOriginalAnswers),
 					answers: JSON.stringify(data.answers),
 					point
 				}

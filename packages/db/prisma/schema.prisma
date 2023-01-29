@@ -31,12 +31,13 @@ model Question {
 }
 
 model ExamSubmit {
-  id            String @id @default(cuid())
-  studentId     String
-  studentName   String
-  studentBranch String
-  answers       String
-  point         Int
+  id              String @id @default(cuid())
+  studentId       String
+  studentName     String
+  studentBranch   String
+  originalAnswers String
+  answers         String
+  point           Int
 
   examId    String?
   exam      Exam?    @relation(fields: [examId], references: [id])

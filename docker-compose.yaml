@@ -6,7 +6,7 @@ volumes:
 
 services:
   mysql:
-    container_name: ryouko-database
+    container_name: exam-database
     image: mysql:8
     restart: unless-stopped
     ports:

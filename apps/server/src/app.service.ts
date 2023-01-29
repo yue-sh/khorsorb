@@ -158,8 +158,19 @@ export class AppService {
 		})
 	}
 
-	getExams() {
-		return this.db.exam.findMany()
+	async getExams() {
+		const examList = []
+		const exam = await this.db.exam.findMany()
+		for (const e of exam) {
+			const questionCount = this.db.question.count({
+				where: {
+					examId: e.id
+				}
+			})
+			examList.push({ ...exam, questionCount })
+		}
+
+		return examList
 	}
 
 	getQuestions(args?: GetQuestionsArgs) {

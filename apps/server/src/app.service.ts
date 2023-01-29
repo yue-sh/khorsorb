@@ -202,7 +202,8 @@ export class AppService {
 				id: true,
 				choice1: true,
 				choice2: true,
-				text: true
+				text: true,
+				examId: true
 			}
 		})
 	}

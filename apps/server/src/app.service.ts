@@ -349,7 +349,7 @@ export class AppService {
 			return this.db.$transaction(async (tx) => {
 				await this.verifyAdmin(token)
 				const { questionId, data } = args
-				const updatedQuestion = tx.question.update({
+				const updatedQuestion = await tx.question.update({
 					where: { id: questionId },
 					data
 				})
@@ -385,7 +385,7 @@ export class AppService {
 				if (!key || !value) {
 					throw new BadRequestException('Missing key or value')
 				}
-				const updatedSetting = tx.setting.update({
+				const updatedSetting = await tx.setting.update({
 					where: { key },
 					data: { value }
 				})

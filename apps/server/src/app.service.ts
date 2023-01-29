@@ -201,7 +201,10 @@ export class AppService {
 			'ADMIN_USER_PASSWORD'
 		)
 		if (username === storedUsername && password === storedPassword) {
-			return generateToken(JSON.stringify({ username }))
+			return {
+				success: true,
+				token: generateToken(JSON.stringify({ username }))
+			}
 		}
 		throw new UnauthorizedException()
 	}
@@ -239,7 +242,7 @@ export class AppService {
 				})
 			}
 
-			return exam
+			return { success: true, exam }
 		})
 	}
 
@@ -256,7 +259,7 @@ export class AppService {
 					data
 				})
 
-				return updatedExam
+				return { success: true, updatedExam }
 			})
 		} catch {
 			throw new BadRequestException('Exam not found')
@@ -275,7 +278,7 @@ export class AppService {
 					where: { id: examId }
 				})
 
-				return true
+				return { success: true }
 			})
 		} catch {
 			throw new BadRequestException('Exam not found')
@@ -296,14 +299,15 @@ export class AppService {
 			if (!exam) {
 				throw new BadRequestException('Exam not found')
 			}
-
-			return tx.question.create({
+			const question = await tx.question.create({
 				data: {
 					id: cuid.slug(),
 					examId: exam.id,
 					...data
 				}
 			})
+
+			return { success: true, question }
 		})
 	}
 
@@ -317,7 +321,7 @@ export class AppService {
 					data
 				})
 
-				return updatedQuestion
+				return { success: true, updatedQuestion }
 			})
 		} catch {
 			throw new BadRequestException('Question not found')
@@ -333,7 +337,7 @@ export class AppService {
 					where: { id: questionId }
 				})
 
-				return true
+				return { success: true }
 			})
 		} catch {
 			throw new BadRequestException('Question not found')
@@ -353,7 +357,7 @@ export class AppService {
 					data: { value }
 				})
 
-				return updatedSetting
+				return { success: true, updatedSetting }
 			})
 		} catch {
 			throw new BadRequestException('Setting not found')
@@ -399,8 +403,7 @@ export class AppService {
 				text: answer.text,
 				answer: answer.answer
 			}))
-
-			return tx.examSubmit.create({
+			const examSubmit = await tx.examSubmit.create({
 				data: {
 					examId,
 					studentId: data.studentId,
@@ -411,6 +414,8 @@ export class AppService {
 					point
 				}
 			})
+
+			return { success: true, examSubmit }
 		})
 	}
 }

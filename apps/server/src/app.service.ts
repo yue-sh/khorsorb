@@ -173,7 +173,8 @@ export class AppService {
 		return examList
 	}
 
-	getAdminQuestions(args?: GetQuestionsArgs) {
+	async getAdminQuestions(token, args?: GetQuestionsArgs) {
+		await this.verifyAdmin(token)
 		const { examId } = args || {}
 
 		return this.db.question.findMany({

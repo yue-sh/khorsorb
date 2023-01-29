@@ -12,6 +12,7 @@ import {
 	DeleteExamArgs
 } from './admin.dto'
 import { AppService } from '../app.service'
+import { GetQuestionsArgs } from '../public/public.dto'
 
 @Controller('/v1/admin')
 export class AdminController {
@@ -80,5 +81,13 @@ export class AdminController {
 		@Headers('Authorization') token
 	) {
 		return this.service.updateSetting(args, token)
+	}
+
+	@Get('/exam/questions')
+	getAdminQuestions(
+		@Headers('Authorization') token,
+		@Query() args?: GetQuestionsArgs
+	) {
+		return this.service.getAdminQuestions(token, args)
 	}
 }

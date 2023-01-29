@@ -58,3 +58,16 @@ export class UpdateSettingArgs {
 	key: string
 	value: string
 }
+
+export class UpdateGroupArgs {
+	groupId: string
+	data: {
+		studentId: string
+		studentName: string
+		studentBranch: string
+	}
+}
+
+export class DeleteGroupArgs {
+	groupId: string
+}

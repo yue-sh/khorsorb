@@ -14,10 +14,14 @@ class ExamAnswer {
 
 export class SubmitExamArgs {
 	examId: string
+	groupId: string
 	data: {
-		studentId: string
-		studentName: string
-		studentBranch: string
 		answers: ExamAnswer[]
 	}
+}
+
+export class CreateGroupArgs {
+	studentId: string
+	studentName: string
+	studentBranch: string
 }

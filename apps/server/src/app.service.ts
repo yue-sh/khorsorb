@@ -16,9 +16,12 @@ import {
 	CreateQuestionArgs,
 	DeleteQuestionArgs,
 	UpdateQuestionArgs,
-	UpdateSettingArgs
+	UpdateSettingArgs,
+	UpdateGroupArgs,
+	DeleteGroupArgs
 } from './admin/admin.dto'
 import {
+	CreateGroupArgs,
 	GetQuestionsArgs,
 	GetResultArgs,
 	SubmitExamArgs
@@ -106,8 +109,15 @@ export class AppService {
 					}
 				}
 			})
+			const submitGroup = await tx.submitGroup.findMany({
+				where: {
+					createdAt: {
+						gte: new Date(new Date().setDate(new Date().getDate() - 7))
+					}
+				}
+			})
 			const examSubmitCount = examSubmit.length
-			const examSubmitByBranch = examSubmit.reduce((acc, curr) => {
+			const examSubmitByBranch = submitGroup.reduce((acc, curr) => {
 				const { studentBranch } = curr
 				if (acc[studentBranch]) {
 					acc[studentBranch]++
@@ -151,7 +161,7 @@ export class AppService {
 		if (!studentId) {
 			throw new BadRequestException('Missing studentId')
 		}
-		return this.db.examSubmit.findMany({
+		return this.db.submitGroup.findMany({
 			where: {
 				studentId
 			}
@@ -399,7 +409,7 @@ export class AppService {
 	}
 
 	submitExam(args: SubmitExamArgs) {
-		const { examId, data } = args || {}
+		const { examId, groupId, data } = args || {}
 		if (!examId || !data) {
 			throw new BadRequestException('Missing examId or data')
 		}
@@ -444,9 +454,7 @@ export class AppService {
 			const examSubmit = await tx.examSubmit.create({
 				data: {
 					examId,
-					studentId: data.studentId,
-					studentName: data.studentName,
-					studentBranch: data.studentBranch,
+					groupId,
 					originalAnswers: JSON.stringify(mappedOriginalAnswers),
 					answers: JSON.stringify(data.answers),
 					point
@@ -454,6 +462,39 @@ export class AppService {
 			})
 
 			return { success: true, examSubmit }
+		})
+	}
+
+	createGroup(args: CreateGroupArgs) {
+		const { studentId, studentName, studentBranch } = args || {}
+
+		return this.db.submitGroup.create({
+			data: {
+				studentId,
+				studentName,
+				studentBranch
+			}
+		})
+	}
+
+	async updateGroup(args: UpdateGroupArgs, token) {
+		await this.verifyAdmin(token)
+		const { groupId, data } = args || {}
+
+		return this.db.submitGroup.update({
+			where: {
+				id: groupId
+			},
+			data
+		})
+	}
+
+	async deleteGroup(args: DeleteGroupArgs, token) {
+		await this.verifyAdmin(token)
+		const { groupId } = args || {}
+
+		return this.db.submitGroup.delete({
+			where: { id: groupId }
 		})
 	}
 }

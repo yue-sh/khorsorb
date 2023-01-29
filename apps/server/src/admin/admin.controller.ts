@@ -9,7 +9,9 @@ import {
 	UpdateQuestionArgs,
 	DeleteQuestionArgs,
 	UpdateSettingArgs,
-	DeleteExamArgs
+	DeleteExamArgs,
+	UpdateGroupArgs,
+	DeleteGroupArgs
 } from './admin.dto'
 import { AppService } from '../app.service'
 import { GetQuestionsArgs } from '../public/public.dto'
@@ -89,5 +91,15 @@ export class AdminController {
 		@Query() args?: GetQuestionsArgs
 	) {
 		return this.service.getAdminQuestions(token, args)
+	}
+
+	@Post('/group/update')
+	updateGroup(@Body() args: UpdateGroupArgs, @Headers('Authorization') token) {
+		return this.service.updateGroup(args, token)
+	}
+
+	@Post('/group/delete')
+	deleteGroup(@Body() args: DeleteGroupArgs, @Headers('Authorization') token) {
+		return this.service.deleteGroup(args, token)
 	}
 }

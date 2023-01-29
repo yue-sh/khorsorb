@@ -1,6 +1,11 @@
 import { Controller, Get, Query, Post, Body } from '@nestjs/common'
 
-import { GetQuestionsArgs, GetResultArgs, SubmitExamArgs } from './public.dto'
+import {
+	GetQuestionsArgs,
+	GetResultArgs,
+	SubmitExamArgs,
+	CreateGroupArgs
+} from './public.dto'
 import { AppService } from '../app.service'
 
 @Controller('/v1/public')
@@ -25,5 +30,10 @@ export class PublicController {
 	@Post('/exam/submit')
 	submitExam(@Body() args: SubmitExamArgs) {
 		return this.service.submitExam(args)
+	}
+
+	@Post('/group/create')
+	createGroup(@Body() args: CreateGroupArgs) {
+		return this.service.createGroup(args)
 	}
 }

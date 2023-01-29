@@ -32,19 +32,28 @@ model Question {
   updatedAt DateTime @updatedAt
 }
 
+model SubmitGroup {
+  id            String       @id @default(cuid())
+  studentId     String
+  studentName   String
+  studentBranch String
+  submits       ExamSubmit[]
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+}
+
 model ExamSubmit {
   id              String @id @default(cuid())
-  studentId       String
-  studentName     String
-  studentBranch   String
-  originalAnswers String
   answers         String
   point           Int
+  originalAnswers String
 
   examId    String?
-  exam      Exam?    @relation(fields: [examId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  exam      Exam?       @relation(fields: [examId], references: [id])
+  groupId   String
+  group     SubmitGroup @relation(fields: [groupId], references: [id])
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
 }
 
 model Setting {

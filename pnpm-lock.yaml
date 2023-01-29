@@ -40,23 +40,31 @@ importers:
 
   apps/client:
     specifiers:
+      '@chakra-ui/icons': ^2.0.17
       '@chakra-ui/react': ^2.4.9
       '@emotion/react': ^11.10.5
       '@emotion/styled': ^11.10.5
       '@types/react': 18.0.27
       '@types/react-dom': 18.0.10
+      chart.js: ^4.2.0
       framer-motion: ^8.5.4
       next: 13.1.6
       react: 18.2.0
+      react-chartjs-2: ^5.2.0
       react-dom: 18.2.0
+      react-icons: ^4.7.1
     dependencies:
+      '@chakra-ui/icons': 2.0.17_react@18.2.0
       '@chakra-ui/react': 2.4.9_uee6ed5bxuzftcjxqdeijj4uxm
       '@emotion/react': 11.10.5_3stiutgnnbnfnf3uowm5cip22i
       '@emotion/styled': 11.10.5_jrh5enlbqfbnumycmktdqgd6se
+      chart.js: 4.2.0
       framer-motion: 8.5.4_biqbaboplfbrettd7655fr4n2y
       next: 13.1.6_biqbaboplfbrettd7655fr4n2y
       react: 18.2.0
+      react-chartjs-2: 5.2.0_uxqdnqzacoapcp4mwytn5yclyu
       react-dom: 18.2.0_react@18.2.0
+      react-icons: 4.7.1_react@18.2.0
     devDependencies:
       '@types/react': 18.0.27
       '@types/react-dom': 18.0.10
@@ -505,6 +513,16 @@ packages:
       react: 18.2.0
     dev: false
 
+  /@chakra-ui/icon/3.0.16_react@18.2.0:
+    resolution: {integrity: sha512-RpA1X5Ptz8Mt39HSyEIW1wxAz2AXyf9H0JJ5HVx/dBdMZaGMDJ0HyyPBVci0m4RCoJuyG1HHG/DXJaVfUTVAeg==}
+    peerDependencies:
+      '@chakra-ui/system': '>=2.0.0'
+      react: '>=18'
+    dependencies:
+      '@chakra-ui/shared-utils': 2.0.5
+      react: 18.2.0
+    dev: false
+
   /@chakra-ui/icon/3.0.16_ublygk26yvqigtycgan52uuiea:
     resolution: {integrity: sha512-RpA1X5Ptz8Mt39HSyEIW1wxAz2AXyf9H0JJ5HVx/dBdMZaGMDJ0HyyPBVci0m4RCoJuyG1HHG/DXJaVfUTVAeg==}
     peerDependencies:
@@ -513,6 +531,16 @@ packages:
     dependencies:
       '@chakra-ui/shared-utils': 2.0.5
       '@chakra-ui/system': 2.4.0_dovxhg2tvkkxkdnqyoum6wzcxm
+      react: 18.2.0
+    dev: false
+
+  /@chakra-ui/icons/2.0.17_react@18.2.0:
+    resolution: {integrity: sha512-HMJP0WrJgAmFR9+Xh/CBH0nVnGMsJ4ZC8MK6tMgxPKd9/muvn0I4hsicHqdPlLpmB0TlxlhkBAKaVMtOdz6F0w==}
+    peerDependencies:
+      '@chakra-ui/system': '>=2.0.0'
+      react: '>=18'
+    dependencies:
+      '@chakra-ui/icon': 3.0.16_react@18.2.0
       react: 18.2.0
     dev: false
 
@@ -1574,6 +1602,10 @@ packages:
       '@jridgewell/resolve-uri': 3.1.0
       '@jridgewell/sourcemap-codec': 1.4.14
     dev: true
+
+  /@kurkle/color/0.3.2:
+    resolution: {integrity: sha512-fuscdXJ9G1qb7W8VdHi+IwRqij3lBkosAm4ydQtEmbY58OzHXqQhvlxqEkoz0yssNVn38bcpRWgA9PP+OGoisw==}
+    dev: false
 
   /@mapbox/node-pre-gyp/1.0.10:
     resolution: {integrity: sha512-4ySo4CjzStuprMwk35H5pPbkymjv1SF3jGLj6rAHp/xT/RF7TL7bd9CTm1xDY49K2qF7jmR/g7k+SkLETP6opA==}
@@ -2965,6 +2997,13 @@ packages:
   /chardet/0.7.0:
     resolution: {integrity: sha512-mT8iDcrh03qDGRRmoA2hmBJnxpllMR+0/0qlzjqZES6NdiWDcZkCNAk4rPFZ9Q85r27unkiNNg8ZOiwZXBHwcA==}
     dev: true
+
+  /chart.js/4.2.0:
+    resolution: {integrity: sha512-wbtcV+QKeH0F7gQZaCJEIpsNriFheacouJQTVIjITi3eQA8bTlIBoknz0+dgV79aeKLNMAX+nDslIVE/nJ3rzA==}
+    engines: {pnpm: ^7.0.0}
+    dependencies:
+      '@kurkle/color': 0.3.2
+    dev: false
 
   /chokidar/3.5.3:
     resolution: {integrity: sha512-Dr3sfKRP6oTcjf2JmUmFJfeVMvXBdegxB0iVQ5eb2V10uFJUCAS8OByZdVAyVb8xXNz3GjjTgj9kLWsZTqE6kw==}
@@ -5862,6 +5901,16 @@ packages:
       safe-buffer: 5.2.1
     dev: true
 
+  /react-chartjs-2/5.2.0_uxqdnqzacoapcp4mwytn5yclyu:
+    resolution: {integrity: sha512-98iN5aguJyVSxp5U3CblRLH67J8gkfyGNbiK3c+l1QI/G4irHMPQw44aEPmjVag+YKTyQ260NcF82GTQ3bdscA==}
+    peerDependencies:
+      chart.js: ^4.1.1
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      chart.js: 4.2.0
+      react: 18.2.0
+    dev: false
+
   /react-clientside-effect/1.2.6_react@18.2.0:
     resolution: {integrity: sha512-XGGGRQAKY+q25Lz9a/4EPqom7WRjz3z9R2k4jhVKA/puQFH/5Nt27vFZYql4m4NVNdUvX8PS3O7r/Zzm7cjUlg==}
     peerDependencies:
@@ -5902,6 +5951,14 @@ packages:
       react-clientside-effect: 1.2.6_react@18.2.0
       use-callback-ref: 1.3.0_3stiutgnnbnfnf3uowm5cip22i
       use-sidecar: 1.1.2_3stiutgnnbnfnf3uowm5cip22i
+    dev: false
+
+  /react-icons/4.7.1_react@18.2.0:
+    resolution: {integrity: sha512-yHd3oKGMgm7zxo3EA7H2n7vxSoiGmHk5t6Ou4bXsfcgWyhfDKMpyKfhHR6Bjnn63c+YXBLBPUql9H4wPJM6sXw==}
+    peerDependencies:
+      react: '*'
+    dependencies:
+      react: 18.2.0
     dev: false
 
   /react-is/16.13.1:

@@ -8,7 +8,6 @@ import {
 import * as cuid from 'cuid'
 
 import {
-	GetAnswersArgs,
 	AdminLoginArgs,
 	CreateExamArgs,
 	UpdateExamArgs,
@@ -164,6 +163,13 @@ export class AppService {
 		return this.db.submitGroup.findMany({
 			where: {
 				studentId
+			},
+			include: {
+				submits: {
+					select: {
+						point: true
+					}
+				}
 			}
 		})
 	}
@@ -218,13 +224,12 @@ export class AppService {
 		})
 	}
 
-	async getAdminResults(token, args?: GetAnswersArgs) {
+	async getAdminResults(token) {
 		await this.verifyAdmin(token)
-		const { examId } = args || {}
 
-		return this.db.examSubmit.findMany({
-			where: {
-				...(examId && { examId })
+		return this.db.submitGroup.findMany({
+			include: {
+				submits: true
 			}
 		})
 	}
@@ -460,8 +465,9 @@ export class AppService {
 					point
 				}
 			})
+			const questionsCount = questions.length
 
-			return { success: true, examSubmit }
+			return { success: true, examSubmit: { questionsCount, ...examSubmit } }
 		})
 	}
 

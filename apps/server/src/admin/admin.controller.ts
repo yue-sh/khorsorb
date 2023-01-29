@@ -26,11 +26,8 @@ export class AdminController {
 	}
 
 	@Get('/results')
-	getAdminResults(
-		@Headers('Authorization') token,
-		@Query() args?: GetAnswersArgs
-	) {
-		return this.service.getAdminResults(token, args)
+	getAdminResults(@Headers('Authorization') token) {
+		return this.service.getAdminResults(token)
 	}
 
 	@Post('/login')

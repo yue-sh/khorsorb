@@ -162,12 +162,12 @@ export class AppService {
 		const examList = []
 		const exam = await this.db.exam.findMany()
 		for (const e of exam) {
-			const questionCount = this.db.question.count({
+			const questionCount = await this.db.question.count({
 				where: {
 					examId: e.id
 				}
 			})
-			examList.push({ ...exam, questionCount })
+			examList.push({ ...e, questionCount })
 		}
 
 		return examList

@@ -1,12 +1,12 @@
 import { Box, Grid, GridItem, Text } from "@chakra-ui/react";
 import { FiFileText, FiUser } from "react-icons/fi";
-import DashCard from "../../components/dashCard";
 import Sidebar from "../../layouts/default";
 import { Chart as ChartJS, BarElement, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement } from "chart.js";
 import { Bar, Line } from 'react-chartjs-2';
 import { useEffect, useState } from "react";
 import { ENDPOINT_URL } from "../../libs/utils";
 import { useRouter } from "next/router";
+import DashCard from "../../components/DashCard";
 
 
 const LineChart = ({ datas }: { datas: number[] }) => {

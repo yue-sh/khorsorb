@@ -1,7 +1,6 @@
 import { Controller, Post, Headers, Body, Get, Query } from '@nestjs/common'
 
 import {
-	GetAnswersArgs,
 	AdminLoginArgs,
 	CreateExamArgs,
 	UpdateExamArgs,

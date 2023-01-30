@@ -463,7 +463,7 @@ export class AppService {
 				choice1: answer.choice1,
 				choice2: answer.choice2
 			}))
-			const examSubmit = await tx.examSubmit.create({
+			await tx.examSubmit.create({
 				data: {
 					examName: examName.name,
 					examId,

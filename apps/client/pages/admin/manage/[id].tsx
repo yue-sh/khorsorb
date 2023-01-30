@@ -1,4 +1,4 @@
-import { Editable, EditablePreview, Popover, PopoverTrigger, PopoverContent, PopoverHeader, PopoverArrow, PopoverCloseButton, PopoverBody, PopoverFooter, ButtonGroup, EditableInput, ModalOverlay, Button, StatHelpText, Stat, StatLabel, StatNumber, ModalHeader, ModalCloseButton, ModalFooter, ModalContent, ModalBody, Box, Text, Table, Tr, Th, Thead, TableCaption, Tbody, Td, IconButton, Collapse, Grid, GridItem, RadioGroup, Stack, Radio } from "@chakra-ui/react";
+import { Editable, EditablePreview, Popover, PopoverTrigger, PopoverContent, PopoverHeader, PopoverArrow, PopoverCloseButton, PopoverBody, PopoverFooter, ButtonGroup, EditableInput, Button, Box, Text, RadioGroup, Stack, Radio } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { BiAddToQueue, BiTrash } from "react-icons/bi";
@@ -176,7 +176,7 @@ function ManagePage() {
 					answer: true
 				}
 			})
-		}).then(res => res.json()).then(data => {
+		}).then(res => res.json()).then(() => {
 			loadAllQuestions()
 		})
 	}

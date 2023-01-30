@@ -101,23 +101,29 @@ function AdminPage() {
 	const router = useRouter();
 	const [statsData, setStatsData] = useState(null as any)
 	useEffect(() => {
-		if (document.cookie.includes("token")) {
-			fetch(ENDPOINT_URL + "/v1/admin/stats", {
-				method: "GET",
-				headers: {
-					"Content-Type": "application/json",
-					Authorization: `Bearer ${document.cookie.split("=")[1]}`,
-				},
-			})
-				.then((res) => res.json())
-				.then((data) => {
-					if (data?.statusCode === 401) {
-						router.push("/admin/signin");
-					}
-					setStatsData(data);
-				});
+		try {
+			if (document.cookie.includes("token")) {
+				fetch(ENDPOINT_URL + "/v1/admin/stats", {
+					method: "GET",
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${document.cookie.split("=")[1]}`,
+					},
+				})
+					.then((res) => res.json())
+					.then((data) => {
+						if (data?.statusCode === 401) {
+							router.push("/admin/signin");
+						}
+						setStatsData(data);
+					});
+			}
+			return
+		} catch (e) {
+			console.log(e)
 		}
-	}, []);
+		router.push("/admin/signin");
+	}, [router.isReady]);
 
 	ChartJS.register(ArcElement, BarElement, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement);
 	return (

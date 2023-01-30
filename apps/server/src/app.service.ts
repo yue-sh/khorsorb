@@ -28,7 +28,7 @@ import {
 
 @Injectable()
 export class AppService {
-	constructor(private readonly db: PrismaService) {}
+	constructor(private readonly db: PrismaService) { }
 
 	private async verifyAdmin(token) {
 		try {
@@ -101,7 +101,7 @@ export class AppService {
 		return this.db.$transaction(async (tx) => {
 			const examCount = await tx.exam.count()
 			const questionCount = await tx.question.count()
-			const examSubmit = await tx.examSubmit.findMany({
+			const examSubmit = await tx.submitGroup.findMany({
 				where: {
 					createdAt: {
 						gte: new Date(new Date().setDate(new Date().getDate() - 7))
@@ -433,12 +433,19 @@ export class AppService {
 			}
 			for (const question of questions) {
 				const studentAnswer = data.answers.find(
-					(answer) => answer.questionId === question.id
+					(answer) => {
+						return answer.questionId === question.id
+					}
 				)
+				console.log(studentAnswer,question, studentAnswer.answer === question.answer)
 				if (studentAnswer && studentAnswer.answer === question.answer) {
 					point++
 				}
 			}
+			const examName = await tx.exam.findUnique({
+				where: { id: examId },
+				select: { name: true }
+			})
 			const originalAnswers = await tx.question.findMany({
 				where: { examId },
 				select: {
@@ -458,6 +465,7 @@ export class AppService {
 			}))
 			const examSubmit = await tx.examSubmit.create({
 				data: {
+					examName: examName.name,
 					examId,
 					groupId,
 					originalAnswers: JSON.stringify(mappedOriginalAnswers),
@@ -467,7 +475,11 @@ export class AppService {
 			})
 			const questionsCount = questions.length
 
-			return { success: true, examSubmit: { questionsCount, ...examSubmit } }
+			return { success: true, examSubmit: {
+				questionsCount,
+				point,
+				examName: examName.name
+			} }
 		})
 	}
 

@@ -24,16 +24,18 @@ import {
 } from 'react-icons/fi';
 import { IconType } from 'react-icons';
 import { ReactText } from 'react';
+import { useRouter } from 'next/router';
 
 interface LinkItemProps {
 	name: string;
 	icon: IconType;
+	url: string;
 }
 const LinkItems: Array<LinkItemProps> = [
-	{ name: 'หน้าหลัก', icon: FiHome },
-	{ name: 'ผู้ทำแบบทดสอบ', icon: FiTrendingUp },
-	{ name: 'จัดการแบบทดสอบ', icon: FiCompass },
-	{ name: 'ออกจากระบบ', icon: FiArrowRight },
+	{ name: 'หน้าหลัก', icon: FiHome, url: '/admin' },
+	{ name: 'ผู้ทำแบบทดสอบ', icon: FiTrendingUp, url: '/admin/tester' },
+	{ name: 'จัดการแบบทดสอบ', icon: FiCompass, url: '/admin/manage' },
+	{ name: 'ออกจากระบบ', icon: FiArrowRight, url: '/admin/logout' },
 ];
 
 export default function SimpleSidebar({ children }: { children: ReactNode }) {
@@ -70,6 +72,7 @@ interface SidebarProps extends BoxProps {
 }
 
 const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
+	const router = useRouter();
 	return (
 		<Box
 			bg={useColorModeValue('#1a1c24', 'gray.900')}
@@ -88,7 +91,14 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
 				<CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
 			</Flex>
 			{LinkItems.map((link) => (
-				<NavItem key={link.name} icon={link.icon}>
+				<NavItem key={link.name} onClick={() => {
+					if (link.url == '/admin/logout') {
+						document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
+						router.push('/admin/signin')
+					} else {
+						router.push(link.url)
+					}
+				}} icon={link.icon}>
 					{link.name}
 				</NavItem>
 			))}

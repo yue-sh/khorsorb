@@ -44,9 +44,10 @@ model SubmitGroup {
 
 model ExamSubmit {
   id              String @id @default(cuid())
-  answers         String
+  answers         String @db.Text
   point           Int
-  originalAnswers String
+  originalAnswers String @db.Text
+	examName				String @default("")
 
   examId    String?
   exam      Exam?       @relation(fields: [examId], references: [id])

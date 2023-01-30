@@ -8,7 +8,6 @@ export class GetQuestionsArgs {
 
 class ExamAnswer {
 	questionId: string
-	text: string
 	answer: boolean
 }
 
